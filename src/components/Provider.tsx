@@ -12,10 +12,9 @@ interface ProvidersProps {
 const Providers: FunctionComponent<ProvidersProps> = ({ children }) => {
   return (
     <ThemeProvider
-      themes={[colorModes.SYSTEM, colorModes.DARK, colorModes.LIGHT]}
+      themes={[colorModes.DARK, colorModes.LIGHT]}
       attribute="class"
-      defaultTheme={colorModes.SYSTEM}
-      enableSystem
+      defaultTheme={colorModes.LIGHT}
     >
       <SessionProvider>{children}</SessionProvider>
     </ThemeProvider>
