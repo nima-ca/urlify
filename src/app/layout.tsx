@@ -1,9 +1,9 @@
+import Navbar from "@/components/Navbar";
 import Providers from "@/components/Provider";
-import { Inter } from "next/font/google";
-import { ToastContainer } from "react-toastify";
 import { cn } from "@/lib/utils/cn";
 import "@/styles/globals.css";
-import Navbar from "@/components/Navbar";
+import { Toaster } from "@/ui/Toast";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +25,8 @@ export default function RootLayout({
       <body className="min-h-screen bg-slate-50 dark:bg-slate-900 antialiased">
         <Providers>
           {children}
-
-          <ToastContainer position="bottom-center" />
+          <Toaster position="bottom-right" />
+          {/* @ts-expect-error Server components */}
           <Navbar />
         </Providers>
       </body>

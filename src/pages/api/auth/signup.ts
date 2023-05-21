@@ -4,7 +4,7 @@ import {
   PASSWORD_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
 } from "@src/lib/api/constants";
-import { errorHandler } from "@src/lib/api/errorHandler";
+import { apiErrorHandler } from "@src/lib/api/apiErrorHandler";
 import { ICoreResponse } from "@src/types/api/api";
 import * as bcrypt from "bcrypt";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -94,7 +94,7 @@ const handler = async (
       success: true,
     });
   } catch (error) {
-    errorHandler(error as Error, res);
+    apiErrorHandler(error as Error, res);
   }
 };
 

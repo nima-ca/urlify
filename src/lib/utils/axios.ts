@@ -30,3 +30,4 @@ const api = (axios: AxiosInstance) => ({
 });
 
 export const apiRouteV1 = api(createAxiosInstance("/api/v1"));
+export const authApi = api(createAxiosInstance("/api/auth"));

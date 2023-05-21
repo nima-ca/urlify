@@ -1,10 +1,10 @@
 "use client";
 
+import { colorModes } from "@src/lib/enum";
+import { useTheme } from "next-themes";
 import { FC } from "react";
 import { MoonIcon } from "./ui/icons/Moon";
 import { SunIcon } from "./ui/icons/Sun";
-import { useTheme } from "next-themes";
-import { colorModes } from "@src/lib/enum";
 
 const ThemeToggle: FC = () => {
   const { theme, setTheme } = useTheme();

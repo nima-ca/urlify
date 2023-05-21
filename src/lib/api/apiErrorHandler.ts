@@ -1,7 +1,7 @@
 import { NextApiResponse } from "next";
 import * as yup from "yup";
 
-export const errorHandler = (error: Error, res: NextApiResponse) => {
+export const apiErrorHandler = (error: Error, res: NextApiResponse) => {
   if (error instanceof yup.ValidationError) {
     return res.status(400).json({
       error: {

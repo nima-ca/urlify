@@ -1,10 +1,14 @@
-import { FC } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 import LargeHeading from "@/ui/LargeHeading";
 import { LinkIcon } from "@/ui/icons/Link";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
+import { buttonVariants } from "./ui/Button";
+import { authOptions } from "@src/lib/api/authOptions";
 
-const Navbar: FC = () => {
+const Navbar = async () => {
+  const session = await getServerSession(authOptions);
+
   return (
     <nav className="fixed backdrop-blur-sm bg-white/75 dark:bg-slate-900 z-50 top-0 left-0 right-0 h-20 border-b border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-between">
       <div className="container max-w-7xl mx-auto flex justify-between items-center">
@@ -18,7 +22,32 @@ const Navbar: FC = () => {
           </LargeHeading>
         </Link>
 
-        <ThemeToggle />
+        <div className="flex justify-between items-center">
+          <ThemeToggle />
+          {session ? (
+            <Link
+              className={buttonVariants({ variant: "link" })}
+              href="/dashboard"
+            >
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/auth/register"
+                className={buttonVariants({ variant: "link" })}
+              >
+                Register
+              </Link>
+              <Link
+                href="/auth/login"
+                className={buttonVariants({ variant: "link" })}
+              >
+                Login
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
