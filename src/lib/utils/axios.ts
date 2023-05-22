@@ -30,8 +30,9 @@ const api = (axios: AxiosInstance) => ({
 });
 
 export const apiRouteV1 = api(
-  createAxiosInstance(`${process.env.BASE_URL}/api/v1`)
+  createAxiosInstance(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/v1`)
 );
+
 export const authApi = api(
-  createAxiosInstance(`${process.env.BASE_URL}/api/auth`)
+  createAxiosInstance(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/auth`)
 );

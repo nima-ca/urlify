@@ -1,21 +1,17 @@
 "use client";
 
+import OAuth from "@/components/OAuth";
 import Button from "@/ui/Button";
 import { Input } from "@/ui/Input";
-import {
-  PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
-} from "@src/lib/api/constants";
-import { formikErrorHandler } from "@src/lib/utils/formikErrorHandler";
-import { FormikProps, useFormik } from "formik";
-import { signIn } from "next-auth/react";
-import { FC, FormEvent, useState } from "react";
-import * as yup from "yup";
-import OAuth from "@/components/OAuth";
 import LargeHeading from "@/ui/LargeHeading";
 import Paragraph from "@/ui/Paragraph";
 import { toast } from "@/ui/Toast";
+import { formikErrorHandler } from "@src/lib/utils/formikErrorHandler";
+import { loginSchema } from "@src/lib/utils/validationSchema";
+import { FormikProps, useFormik } from "formik";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { FC, FormEvent, useEffect, useState } from "react";
 
 export interface ILoginFormikProps {
   email: string;
@@ -27,32 +23,13 @@ const initialValues: ILoginFormikProps = {
   password: "",
 };
 
-const validationSchema = yup.object({
-  email: yup
-    .string()
-    .email("Please enter a valid email address")
-    .required("Please enter your email"),
-
-  password: yup
-    .string()
-    .min(
-      PASSWORD_MIN_LENGTH,
-      `Your password must be at least ${PASSWORD_MIN_LENGTH} characters`
-    )
-    .max(
-      PASSWORD_MAX_LENGTH,
-      `Your password must be less than ${PASSWORD_MAX_LENGTH} characters`
-    )
-    .required("Please enter your password"),
-});
-
 const LoginForm: FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const formik: FormikProps<ILoginFormikProps> = useFormik({
     initialValues,
-    validationSchema,
+    validationSchema: loginSchema,
     async onSubmit(values) {
       setIsLoading(true);
       try {
@@ -99,6 +76,10 @@ const LoginForm: FC = () => {
     formik.handleSubmit();
   };
 
+  useEffect(() => {
+    formik.setTouched({});
+  }, []);
+
   return (
     <form
       onSubmit={formSubmitHandler}
@@ -118,6 +99,7 @@ const LoginForm: FC = () => {
       <Input
         id="password"
         name="password"
+        type="password"
         value={formik.values.password}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}

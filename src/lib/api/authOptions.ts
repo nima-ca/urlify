@@ -1,11 +1,11 @@
-import GitHub from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { db } from "@/lib/db/db";
-import { SignInWithCredentials } from "@/lib/api/auth/signIn";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { loginWithCredentials } from "@src/lib/api/auth/login";
 import { ILoginPayload } from "@src/types/api/auth/login";
 import { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GitHub from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
 
 const getProviderConfig = () => {
   const GithubClientId = process.env.GITHUB_ID;
@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         const { email, password } = credentials as ILoginPayload;
 
-        const { success, user, token, error } = await SignInWithCredentials({
+        const { success, user, token, error } = await loginWithCredentials({
           email,
           password,
         });
@@ -81,6 +81,9 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.user = token;
       return session;
+    },
+    redirect() {
+      return "/";
     },
   },
 };

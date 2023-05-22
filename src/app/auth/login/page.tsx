@@ -1,7 +1,6 @@
 import LoginForm from "@src/components/LoginForm";
-import { FC } from "react";
 
-const LoginPage: FC = () => {
+const LoginPage = () => {
   return (
     <section className="flex justify-center items-center h-screen">
       <LoginForm />
