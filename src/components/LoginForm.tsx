@@ -11,10 +11,11 @@ import { FormikProps, useFormik } from "formik";
 import { signIn } from "next-auth/react";
 import { FC, FormEvent, useState } from "react";
 import * as yup from "yup";
-import LargeHeading from "./ui/LargeHeading";
-import { toast } from "./ui/Toast";
-import { GithubIcon } from "./ui/icons/Github";
-import { GoogleIcon } from "./ui/icons/Google";
+import OAuth from "@/components/OAuth";
+import LargeHeading from "@/ui/LargeHeading";
+import Paragraph from "@/ui/Paragraph";
+import { toast } from "@/ui/Toast";
+import { useRouter } from "next/navigation";
 
 export interface ILoginFormikProps {
   email: string;
@@ -46,19 +47,48 @@ const validationSchema = yup.object({
 });
 
 const LoginForm: FC = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const formik: FormikProps<ILoginFormikProps> = useFormik({
     initialValues,
     validationSchema,
-    onSubmit(values) {
-      //   signIn("credentials", {
-      //     email: values.email,
-      //     password: values.password,
-      //   });
+    async onSubmit(values) {
+      setIsLoading(true);
+      try {
+        const res = await signIn("credentials", {
+          email: values.email,
+          password: values.password,
+          redirect: false,
+        });
+
+        if (res?.ok) {
+          router.push("/dashboard");
+          toast({
+            message: "You logged in successfully!",
+            title: "Login successful",
+            type: "success",
+          });
+        }
+
+        if (!res?.ok) {
+          toast({
+            message: "Email or Password incorrect",
+            title: "Login failed",
+            type: "error",
+          });
+        }
+      } catch (error) {
+        toast({
+          message: "Something went wrong",
+          title: "Login failed",
+          type: "error",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     },
   });
-
-  const [isGoogleLoggingIn, setIsGoogleLoggingIn] = useState<boolean>(false);
-  const [isGithubLoggingIn, setIsGithubLoggingIn] = useState<boolean>(false);
 
   const formSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,33 +99,13 @@ const LoginForm: FC = () => {
     formik.handleSubmit();
   };
 
-  const toggleLoadingState = (
-    provider: "google" | "github",
-    state: boolean
-  ) => {
-    if (provider === "google") setIsGoogleLoggingIn(state);
-    if (provider === "github") setIsGithubLoggingIn(state);
-  };
-
-  const handleOAuthLogin = async (provider: "google" | "github") => {
-    toggleLoadingState(provider, true);
-    try {
-      await signIn(provider);
-    } catch (error) {
-      toast({
-        title: "Login failed",
-        message: "Something went wrong",
-        type: "error",
-      });
-    }
-  };
-
   return (
     <form
       onSubmit={formSubmitHandler}
       className="flex flex-col gap-3 w-3/4 md:w-2/4 lg:w-1/4 "
     >
-      <LargeHeading>Welcome Back</LargeHeading>
+      <LargeHeading className="text-center">Welcome Back</LargeHeading>
+      <Paragraph>Sign In to your account 🚀</Paragraph>
       <Input
         id="email"
         name="email"
@@ -114,29 +124,11 @@ const LoginForm: FC = () => {
         placeholder="Password"
         error={Boolean(formik.errors.password && formik.touched.password)}
       />
-      <Button type="submit">login</Button>
-      <div className="flex justify-between items-center gap-2">
-        <Button
-          type="submit"
-          className="w-full"
-          isLoading={isGoogleLoggingIn}
-          disabled={isGithubLoggingIn || isGoogleLoggingIn}
-          onClick={() => handleOAuthLogin("google")}
-        >
-          <GoogleIcon className="h-5 w-5 mr-2" />
-          Google
-        </Button>
-        <Button
-          type="submit"
-          className="w-full"
-          isLoading={isGithubLoggingIn}
-          disabled={isGithubLoggingIn || isGoogleLoggingIn}
-          onClick={() => handleOAuthLogin("github")}
-        >
-          <GithubIcon className="h-5 w-5 mr-2" />
-          Github
-        </Button>
-      </div>
+      <Button isLoading={isLoading} type="submit">
+        login
+      </Button>
+      <div className="w-full h-0.5 bg-slate-400"></div>
+      <OAuth />
     </form>
   );
 };

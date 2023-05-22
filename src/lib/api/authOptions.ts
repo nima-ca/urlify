@@ -55,12 +55,13 @@ export const authOptions: NextAuthOptions = {
       clientSecret: getProviderConfig().GoogleClientSecret,
     }),
     CredentialsProvider({
+      id: "credentials",
       name: "credentials",
       credentials: {},
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const { email, password } = credentials as ILoginPayload;
 
-        const { success, user, token } = await SignInWithCredentials({
+        const { success, user, token, error } = await SignInWithCredentials({
           email,
           password,
         });

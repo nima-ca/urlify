@@ -29,5 +29,9 @@ const api = (axios: AxiosInstance) => ({
   defaults: axios.defaults,
 });
 
-export const apiRouteV1 = api(createAxiosInstance("/api/v1"));
-export const authApi = api(createAxiosInstance("/api/auth"));
+export const apiRouteV1 = api(
+  createAxiosInstance(`${process.env.BASE_URL}/api/v1`)
+);
+export const authApi = api(
+  createAxiosInstance(`${process.env.BASE_URL}/api/auth`)
+);
