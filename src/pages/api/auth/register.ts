@@ -1,5 +1,7 @@
 import { db } from "@/lib/db/db";
 import { apiErrorHandler } from "@src/lib/api/apiErrorHandler";
+import { withMethods } from "@src/lib/api/withMethods";
+import { METHODS } from "@src/lib/enum";
 import { signUpSchema } from "@src/lib/utils/validationSchema";
 import { IRegisterResponse } from "@src/types/api/auth/register";
 import * as bcrypt from "bcrypt";
@@ -47,5 +49,4 @@ const handler = async (
     apiErrorHandler(error as Error, res);
   }
 };
-
-export default handler;
+export default withMethods([METHODS.POST], handler);

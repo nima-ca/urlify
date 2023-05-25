@@ -1,5 +1,7 @@
 import { db } from "@/lib/db/db";
 import { apiErrorHandler } from "@src/lib/api/apiErrorHandler";
+import { withMethods } from "@src/lib/api/withMethods";
+import { METHODS } from "@src/lib/enum";
 import { loginSchema } from "@src/lib/utils/validationSchema";
 import { IAuthTokenPayload } from "@src/types/api/api";
 import { ILoginResponse } from "@src/types/api/auth/login";
@@ -66,4 +68,4 @@ const handler = async (
   }
 };
 
-export default handler;
+export default withMethods([METHODS.POST], handler);

@@ -47,6 +47,7 @@ model User {
   sessions      Session[]
   password      String?
   createdAt     DateTime  @default(now())
+  Url           Url[]
 }
 
 model VerificationToken {
@@ -55,4 +56,13 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Url {
+  id        String   @id @default(cuid())
+  userUrl   String
+  link      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
 }
