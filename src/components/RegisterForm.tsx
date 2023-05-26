@@ -9,7 +9,7 @@ import { Input } from "./ui/Input";
 import Button from "./ui/Button";
 import OAuth from "./OAuth";
 import { signUpSchema } from "@src/lib/utils/validationSchema";
-import { registerWithCredentials } from "@src/lib/api/auth/register";
+import { registerWithCredentials } from "@src/lib/api/v1/auth/register";
 import { useRouter } from "next/navigation";
 import { toast } from "./ui/Toast";
 import { IApiError } from "@src/types/api/api";
@@ -82,7 +82,6 @@ const RegisterForm: FC = () => {
     if (hasError) return;
 
     if (formik.values.password !== formik.values.confirmPassword) {
-      console.log("im here");
       formik.setFieldError(
         "password",
         "Password and Confirm Password are not the same"

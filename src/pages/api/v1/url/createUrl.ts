@@ -1,64 +1,48 @@
 import { apiErrorHandler } from "@src/lib/api/apiErrorHandler";
+import { authOptions } from "@src/lib/api/authOptions";
+import { authenticateUser } from "@src/lib/api/authenticateUser";
 import { withMethods } from "@src/lib/api/withMethods";
-import { METHODS } from "@src/lib/enum";
-import { ICreateUrlResponse } from "@src/types/api/v1/url/createUrl";
-import { NextApiRequest, NextApiResponse } from "next";
-import * as jwt from "jsonwebtoken";
-import { IAuthTokenPayload } from "@src/types/api/api";
 import { db } from "@src/lib/db/db";
-import * as yup from "yup";
+import { METHODS } from "@src/lib/enum";
+import { createUrlSchema } from "@src/lib/utils/validationSchema";
+import { ICreateUrlResponse } from "@src/types/api/v1/url/createUrl";
 import { customAlphabet } from "nanoid";
+import { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
 
-const createUrlSchema = yup.object({
-  userUrl: yup
-    .string()
-    .matches(
-      /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-      "Enter correct url!"
-    )
-    .required("Please enter url"),
-});
+const NANO_CUSTOM_ID_CHARS = "1234567890abcdefghigkl";
+const URL_MAX_LENGTH = 7;
 
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ICreateUrlResponse>
 ) => {
   try {
-    const token = req.headers.token as string | undefined;
+    const session = await getServerSession(req, res, authOptions);
 
-    if (!token) {
-      res
-        .status(401)
-        .json({ error: { message: "Invalid token" }, success: false });
+    if (!session) {
+      return res.status(401).json({
+        error: { message: "Unauthorized session" },
+        success: false,
+      });
     }
 
-    let tokenPayload: IAuthTokenPayload | undefined = undefined;
-    try {
-      tokenPayload = jwt.verify(
-        token as string,
-        process.env.NEXTAUTH_SECRET as string
-      ) as IAuthTokenPayload;
-    } catch (error) {
-      return res
-        .status(401)
-        .json({ error: { message: "Invalid token" }, success: false });
-    }
-
-    const user = await db.user.findFirst({ where: { id: tokenPayload.id } });
-    if (!user) {
-      return res
-        .status(401)
-        .json({ error: { message: "Unauthorized user" }, success: false });
+    const userStatus = await authenticateUser(session.user.token);
+    if (userStatus.isAuthenticated === false) {
+      return res.status(401).json({
+        error: { message: userStatus.error ?? "" },
+        success: false,
+      });
     }
 
     const { userUrl } = await createUrlSchema.validate(req.body);
 
-    const nanoid = customAlphabet("1234567890abcdefghigkl", 7);
+    const nanoid = customAlphabet(NANO_CUSTOM_ID_CHARS, URL_MAX_LENGTH);
     const createdUrl = await db.url.create({
       data: {
         link: nanoid(),
         userUrl,
-        userId: user.id,
+        userId: session?.user.id,
       },
     });
 

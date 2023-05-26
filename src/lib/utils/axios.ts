@@ -32,7 +32,3 @@ const api = (axios: AxiosInstance) => ({
 export const apiRouteV1 = api(
   createAxiosInstance(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/v1`)
 );
-
-export const authApi = api(
-  createAxiosInstance(`${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/auth`)
-);

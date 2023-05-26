@@ -4,6 +4,7 @@ import {
   PASSWORD_MIN_LENGTH,
 } from "@/lib/api/constants";
 import * as yup from "yup";
+import { urlWithMandatoryProtocolRegex } from "../regex";
 
 export const loginSchema = yup.object({
   email: yup
@@ -58,4 +59,11 @@ export const signUpSchema = yup.object({
       `Your confirm password must be at least ${PASSWORD_MIN_LENGTH} characters`
     )
     .required("Please enter your confirm password"),
+});
+
+export const createUrlSchema = yup.object({
+  userUrl: yup
+    .string()
+    .matches(urlWithMandatoryProtocolRegex, "Enter correct url!")
+    .required("Please enter url"),
 });

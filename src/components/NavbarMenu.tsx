@@ -1,13 +1,14 @@
-import { authOptions } from "@src/lib/api/authOptions";
-import { getServerSession } from "next-auth";
-import Link from "next/link";
+"use client";
+
 import SignOutButton from "@/components/SignOutButton";
 import { buttonVariants } from "@/ui/Button";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { FC } from "react";
 
-const NavbarMenu = async () => {
-  const session = await getServerSession(authOptions);
-
-  return session ? (
+const NavbarMenu: FC = () => {
+  const { status } = useSession();
+  return status === "authenticated" ? (
     <>
       <Link className={buttonVariants({ variant: "link" })} href="/dashboard">
         Dashboard

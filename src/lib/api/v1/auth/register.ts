@@ -1,4 +1,4 @@
-import { authApi } from "@src/lib/utils/axios";
+import { apiRouteV1 } from "@src/lib/utils/axios";
 import {
   IRegisterPayload,
   IRegisterResponse,
@@ -7,7 +7,7 @@ import {
 export const registerWithCredentials = async (
   credentials: IRegisterPayload
 ): Promise<IRegisterResponse> => {
-  const response = await authApi.post<IRegisterResponse>("/register", {
+  const response = await apiRouteV1.post<IRegisterResponse>("/auth/register", {
     ...credentials,
   });
 
