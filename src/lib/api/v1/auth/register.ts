@@ -1,4 +1,4 @@
-import { apiRouteV1 } from "@src/lib/utils/axios";
+import { BASE_URL } from "@/lib/api/constants";
 import {
   IRegisterPayload,
   IRegisterResponse,
@@ -7,9 +7,13 @@ import {
 export const registerWithCredentials = async (
   credentials: IRegisterPayload
 ): Promise<IRegisterResponse> => {
-  const response = await apiRouteV1.post<IRegisterResponse>("/auth/register", {
-    ...credentials,
+  const res = await fetch(`${BASE_URL}/api/v1/auth/register`, {
+    body: JSON.stringify(credentials),
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
   });
 
-  return response.data;
+  return (await res.json()) as IRegisterResponse;
 };

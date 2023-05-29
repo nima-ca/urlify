@@ -19,9 +19,10 @@ const Navbar = async () => {
           </LargeHeading>
         </Link>
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center gap-5">
           <ThemeToggle />
 
+          {/* @ts-expect-error server components */}
           <NavbarMenu />
         </div>
       </div>

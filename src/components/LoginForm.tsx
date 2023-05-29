@@ -27,11 +27,15 @@ const LoginForm: FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const toggleLoading = (state: boolean): void => {
+    setIsLoading(state);
+  };
+
   const formik: FormikProps<ILoginFormikProps> = useFormik({
     initialValues,
     validationSchema: loginSchema,
     async onSubmit(values) {
-      setIsLoading(true);
+      toggleLoading(true);
       try {
         const res = await signIn("credentials", {
           email: values.email,
@@ -41,6 +45,7 @@ const LoginForm: FC = () => {
 
         if (res?.ok) {
           router.push("/dashboard");
+          router.refresh();
           toast({
             message: "You logged in successfully!",
             title: "Login successful",
@@ -62,7 +67,7 @@ const LoginForm: FC = () => {
           type: "error",
         });
       } finally {
-        setIsLoading(false);
+        toggleLoading(false);
       }
     },
   });
@@ -83,9 +88,11 @@ const LoginForm: FC = () => {
   return (
     <form
       onSubmit={formSubmitHandler}
-      className="flex flex-col gap-3 w-3/4 md:w-2/4 lg:w-1/4 "
+      className="flex flex-col gap-3 w-3/4 md:w-1/2 lg:w-1/3 "
     >
-      <LargeHeading className="text-center">Welcome Back</LargeHeading>
+      <LargeHeading className="text-center lg:text-center">
+        Welcome Back
+      </LargeHeading>
       <Paragraph>Sign In to your account 🚀</Paragraph>
       <Input
         id="email"
@@ -110,7 +117,7 @@ const LoginForm: FC = () => {
         login
       </Button>
       <div className="w-full h-0.5 bg-slate-400"></div>
-      <OAuth />
+      <OAuth isLoading={isLoading} setIsLoading={toggleLoading} />
     </form>
   );
 };

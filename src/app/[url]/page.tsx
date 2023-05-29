@@ -12,6 +12,7 @@ const URLPage = async ({ params }: IUrlPageProps) => {
   let url: IGetUrlResponse | undefined = undefined;
   try {
     url = await getUrl(params.url ?? "");
+    console.log(url);
   } catch (error) {}
 
   if (url) {

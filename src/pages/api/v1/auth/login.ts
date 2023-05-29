@@ -14,6 +14,7 @@ const handler = async (
   res: NextApiResponse<ILoginResponse>
 ) => {
   try {
+    console.log(req.body);
     const credentials = await loginSchema.validate(req.body, {
       stripUnknown: true,
       strict: true,

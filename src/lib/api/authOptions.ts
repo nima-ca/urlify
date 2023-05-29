@@ -1,6 +1,7 @@
+import { CREDENTIALS } from "@/lib/api/constants";
+import { loginWithCredentials } from "@/lib/api/v1/auth/login";
 import { db } from "@/lib/db/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { loginWithCredentials } from "@src/lib/api/v1/auth/login";
 import { ILoginPayload } from "@src/types/api/auth/login";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -55,8 +56,8 @@ export const authOptions: NextAuthOptions = {
       clientSecret: getProviderConfig().GoogleClientSecret,
     }),
     CredentialsProvider({
-      id: "credentials",
-      name: "credentials",
+      id: CREDENTIALS,
+      name: CREDENTIALS,
       credentials: {},
       async authorize(credentials) {
         const { email, password } = credentials as ILoginPayload;
@@ -76,7 +77,30 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      return { ...token, ...user };
+      const dbUser = await db.user.findFirst({
+        where: { email: token.email },
+        include: { accounts: { select: { provider: true } } },
+      });
+
+      const provider = dbUser?.accounts[0]?.provider ?? CREDENTIALS;
+
+      if (provider === CREDENTIALS) {
+        return { ...token, ...user, provider };
+      }
+
+      if (!dbUser) {
+        token.id = user.id;
+        return token;
+      }
+
+      return {
+        id: dbUser.id,
+        email: dbUser.email,
+        name: dbUser.name,
+        picture: null,
+        image: dbUser.image,
+        provider,
+      };
     },
     async session({ session, token }) {
       session.user = token;
