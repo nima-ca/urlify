@@ -1,19 +1,17 @@
 "use client";
 
+import { registerWithCredentials } from "@src/lib/api/v1/auth/register";
 import { formikErrorHandler } from "@src/lib/utils/formikErrorHandler";
+import { signUpSchema } from "@src/lib/utils/validationSchema";
 import { FormikProps, useFormik } from "formik";
+import { useRouter } from "next/navigation";
 import { FC, FormEvent, useEffect, useState } from "react";
+import OAuth from "./OAuth";
+import Button from "./ui/Button";
+import { Input } from "./ui/Input";
 import LargeHeading from "./ui/LargeHeading";
 import Paragraph from "./ui/Paragraph";
-import { Input } from "./ui/Input";
-import Button from "./ui/Button";
-import OAuth from "./OAuth";
-import { signUpSchema } from "@src/lib/utils/validationSchema";
-import { registerWithCredentials } from "@src/lib/api/v1/auth/register";
-import { useRouter } from "next/navigation";
 import { toast } from "./ui/Toast";
-import { IApiError } from "@src/types/api/api";
-import { AxiosError } from "axios";
 
 export interface IRegisterFormikProps {
   name: string;
@@ -51,19 +49,17 @@ const RegisterForm: FC = () => {
             type: "success",
           });
         }
-      } catch (error) {
-        const _error = error as AxiosError;
-        const apiError = _error.response?.data as IApiError;
-        if (apiError.error) {
-          const message = apiError.error.message;
+
+        if (!res.success && res.error) {
+          const errorMessage = res.error.message;
           toast({
-            message: typeof message === "string" ? message : message[0],
+            message:
+              typeof errorMessage === "string" ? errorMessage : errorMessage[0],
             title: "Register failed",
             type: "error",
           });
-          return;
         }
-
+      } catch (error) {
         toast({
           message: "Something went wrong",
           title: "Register failed",

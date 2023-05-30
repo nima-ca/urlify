@@ -8,8 +8,6 @@ import { Input } from "@/ui/Input";
 import { toast } from "@/ui/Toast";
 import { createUrl } from "@src/lib/api/v1/url/createUrl";
 import { formikErrorHandler } from "@src/lib/utils/formikErrorHandler";
-import { ICreateUrlResponse } from "@src/types/api/v1/url/createUrl";
-import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 
@@ -38,10 +36,9 @@ const CreateURLForm: FC = () => {
             type: "success",
           });
         }
-      } catch (error) {
-        const _error = error as AxiosError<ICreateUrlResponse>;
-        const errorMessage = _error.response?.data.error?.message;
-        if (errorMessage) {
+
+        if (!res.success && res.error) {
+          const errorMessage = res.error.message;
           toast({
             message:
               typeof errorMessage === "string" ? errorMessage : errorMessage[0],
@@ -50,6 +47,7 @@ const CreateURLForm: FC = () => {
           });
           return;
         }
+      } catch (error) {
         toast({
           message: "Something went wrong",
           title: "URL",
@@ -87,7 +85,7 @@ const CreateURLForm: FC = () => {
           placeholder="Enter your Link"
           error={Boolean(formik.errors.userUrl && formik.touched.userUrl)}
         />
-        <Button isLoading={isLoading} className="">
+        <Button type="submit" isLoading={isLoading} className="">
           Create
         </Button>
       </form>
