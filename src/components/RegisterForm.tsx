@@ -101,7 +101,7 @@ const RegisterForm: FC = () => {
   return (
     <form
       onSubmit={formSubmitHandler}
-      className="flex flex-col gap-3 w-3/4 md:w-2/4 lg:w-1/4 "
+      className="flex flex-col gap-3 w-3/4 md:w-1/2 lg:w-1/3"
     >
       <LargeHeading className="text-center lg:text-5xl lg:text-center">
         Welcome to Urlify

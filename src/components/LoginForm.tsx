@@ -84,7 +84,7 @@ const LoginForm: FC = () => {
   return (
     <form
       onSubmit={formSubmitHandler}
-      className="flex flex-col gap-3 w-3/4 md:w-1/2 lg:w-1/3 "
+      className="flex flex-col gap-3 w-3/4 md:w-1/2 lg:w-1/3"
     >
       <LargeHeading className="text-center lg:text-center">
         Welcome Back
