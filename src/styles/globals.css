@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.mobile--menu {
+  height: calc(100vh - 5rem);
+}
+
+.backdrop {
+  height: calc(100vh - 5rem);
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.slide-in {
+  animation: slide-in 1000ms forwards;
+}
+
+.slide-out {
+  animation: slide-out 1000ms forwards;
+}

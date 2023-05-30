@@ -3,7 +3,8 @@ import LargeHeading from "@/ui/LargeHeading";
 import { LinkIcon } from "@/ui/icons/Link";
 import Link from "next/link";
 
-import NavbarMenu from "./NavbarMenu";
+import MobileNavbar from "@/components/MobileNavbar";
+import NavbarMenu from "@/components/NavbarMenu";
 
 const Navbar = async () => {
   return (
@@ -21,9 +22,16 @@ const Navbar = async () => {
 
         <div className="flex justify-between items-center gap-5">
           <ThemeToggle />
-
-          {/* @ts-expect-error server components */}
-          <NavbarMenu />
+          <div className="hidden md:flex justify-between items-center gap-5">
+            {/* @ts-expect-error server components */}
+            <NavbarMenu />
+          </div>
+          <MobileNavbar>
+            <div className="md:hidden mt-4 flex flex-col justify-between items-center gap-2">
+              {/* @ts-expect-error server components */}
+              <NavbarMenu />
+            </div>
+          </MobileNavbar>
         </div>
       </div>
     </nav>

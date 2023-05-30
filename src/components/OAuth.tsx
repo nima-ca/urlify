@@ -5,12 +5,7 @@ import { GoogleIcon } from "@/ui/icons/Google";
 import { signIn } from "next-auth/react";
 import { FC, useState } from "react";
 
-interface IOAuthProps {
-  isLoading: boolean;
-  setIsLoading: (state: boolean) => void;
-}
-
-const OAuth: FC<IOAuthProps> = ({ isLoading, setIsLoading }) => {
+const OAuth: FC = () => {
   const [isGoogleLoggingIn, setIsGoogleLoggingIn] = useState<boolean>(false);
   const [isGithubLoggingIn, setIsGithubLoggingIn] = useState<boolean>(false);
 
@@ -18,7 +13,6 @@ const OAuth: FC<IOAuthProps> = ({ isLoading, setIsLoading }) => {
     provider: "google" | "github",
     state: boolean
   ) => {
-    setIsLoading(state);
     if (provider === "google") setIsGoogleLoggingIn(state);
     if (provider === "github") setIsGithubLoggingIn(state);
   };
@@ -42,7 +36,7 @@ const OAuth: FC<IOAuthProps> = ({ isLoading, setIsLoading }) => {
         type="submit"
         className="w-full"
         isLoading={isGoogleLoggingIn}
-        disabled={isGithubLoggingIn || isGoogleLoggingIn || isLoading}
+        disabled={isGithubLoggingIn || isGoogleLoggingIn}
         onClick={() => handleOAuthLogin("google")}
       >
         <GoogleIcon className="h-5 w-5 mr-2" />
@@ -52,7 +46,7 @@ const OAuth: FC<IOAuthProps> = ({ isLoading, setIsLoading }) => {
         type="submit"
         className="w-full"
         isLoading={isGithubLoggingIn}
-        disabled={isGithubLoggingIn || isGoogleLoggingIn || isLoading}
+        disabled={isGithubLoggingIn || isGoogleLoggingIn}
         onClick={() => handleOAuthLogin("github")}
       >
         <GithubIcon className="h-5 w-5 mr-2" />

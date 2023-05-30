@@ -27,15 +27,11 @@ const LoginForm: FC = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const toggleLoading = (state: boolean): void => {
-    setIsLoading(state);
-  };
-
   const formik: FormikProps<ILoginFormikProps> = useFormik({
     initialValues,
     validationSchema: loginSchema,
     async onSubmit(values) {
-      toggleLoading(true);
+      setIsLoading(true);
       try {
         const res = await signIn("credentials", {
           email: values.email,
@@ -67,7 +63,7 @@ const LoginForm: FC = () => {
           type: "error",
         });
       } finally {
-        toggleLoading(false);
+        setIsLoading(false);
       }
     },
   });
@@ -94,6 +90,7 @@ const LoginForm: FC = () => {
         Welcome Back
       </LargeHeading>
       <Paragraph>Sign In to your account 🚀</Paragraph>
+
       <Input
         id="email"
         name="email"
@@ -117,7 +114,7 @@ const LoginForm: FC = () => {
         login
       </Button>
       <div className="w-full h-0.5 bg-slate-400"></div>
-      <OAuth isLoading={isLoading} setIsLoading={toggleLoading} />
+      <OAuth />
     </form>
   );
 };
