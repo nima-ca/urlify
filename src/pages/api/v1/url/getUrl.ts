@@ -19,13 +19,20 @@ const handler = async (
       });
     }
 
-    const url = await db.url.findFirst({ where: { link: link as string } });
+    const url = await db.url.findFirst({
+      where: { link: link as string, isActive: true },
+    });
 
     if (!url) {
       return res
         .status(400)
         .json({ error: { message: "Link not found" }, success: false });
     }
+
+    await db.url.update({
+      where: { id: url.id },
+      data: { views: ++url.views },
+    });
 
     return res.status(200).json({
       error: null,
